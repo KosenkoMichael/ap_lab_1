@@ -34,7 +34,8 @@ def parse(year_from: int, year_to: int, step: int = 1) -> List[List[str]]:
                     )
                     all_data.append(
                         [
-                            day.text, str(month), str(year),
+                            (day.text).zfill(2)+'.' +
+                            str(month).zfill(2)+'.' + str(year),
                             temp.text,
                             press.text,
                             wind.text,
