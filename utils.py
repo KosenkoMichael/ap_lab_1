@@ -20,28 +20,50 @@ def parse(year_from: int, year_to: int, step: int = 1) -> List[List[str]]:
                 try:
                     temp = day.find_next()
                     press = temp.find_next()
-                    wind = (
+                    day_wind = (
                         press.find_next_sibling()
                         .find_next_sibling()
                         .find_next_sibling()
                     )
-                    night_temp = wind.find_next_sibling()
+                    night_temp = day_wind.find_next_sibling()
                     night_press = night_temp.find_next_sibling()
                     night_wind = (
                         night_press.find_next_sibling()
                         .find_next_sibling()
                         .find_next_sibling()
                     )
+                    day_wind_dirrection = ""
+                    day_wind_speed = ""
+                    night_wind_dirrection = ""
+                    night_wind_speed = ""
+                    try:
+                        day_wind_dirrection = day_wind.text.split()[0]
+                    except:
+                        pass
+                    try:
+                        day_wind_speed = day_wind.text.split()[1][0]
+                    except:
+                        pass
+                    try:
+                        night_wind_dirrection = night_wind.text.split()[0]
+                    except:
+                        pass
+                    try:
+                        night_wind_speed = night_wind.text.split()[1][0]
+                    except:
+                        pass
                     all_data.append(
                         [
                             (day.text).zfill(2)+'.' +
                             str(month).zfill(2)+'.' + str(year),
                             temp.text,
                             press.text,
-                            wind.text,
+                            day_wind_dirrection,
+                            day_wind_speed,
                             night_temp.text,
                             night_press.text,
-                            night_wind.text,
+                            night_wind_dirrection,
+                            night_wind_speed
                         ]
                     )
                 except:
