@@ -1,5 +1,6 @@
 import os
 import csv
+from datetime import datetime
 from typing import List
 
 import requests
@@ -7,6 +8,16 @@ from bs4 import BeautifulSoup
 
 
 def parse(year_from: int, year_to: int, step: int = 1) -> List[List[str]]:
+    """ open url for (year_from) to (year_to)
+
+    Args:
+        year_from (int): begin parse
+        year_to (int): end_parse
+        step (int, optional): step in range of years. Defaults to 1.
+
+    Returns:
+        List[List[str]]: list of rows with data {date, day: temp, press, wind_dir, wind_speed, night: temp, press, wind_dir, wind_speed}
+    """
     all_data = []
     for year in range(year_from, year_to + 1, step):
         print(year)
@@ -54,8 +65,8 @@ def parse(year_from: int, year_to: int, step: int = 1) -> List[List[str]]:
                         pass
                     all_data.append(
                         [
-                            (day.text).zfill(2)+'.' +
-                            str(month).zfill(2)+'.' + str(year),
+                            to_iso((day.text).zfill(2)+'-' +
+                                   str(month).zfill(2)+'-' + str(year)),
                             temp.text,
                             press.text,
                             day_wind_dirrection,
@@ -79,9 +90,28 @@ def parse(year_from: int, year_to: int, step: int = 1) -> List[List[str]]:
 
 
 def csv_update(path: str, data: List[List[str]]) -> None:
+    """fill csv file with data
+
+    Args:
+        path (str): path to file
+        data (List[List[str]]): data, we want to write in file
+    """
     with open(path, "w", encoding="utf-8", newline="") as file:
         writer = csv.writer(file)
         writer.writerows(data)
+
+
+def to_iso(cur_date: str) -> str:
+    """return date in format "%Y-%m-%d"
+
+    Args:
+        cur_date (str): date in format "%d-%m-%Y"
+
+    Returns:
+        str: date in format "%d-%m-%Y"
+    """
+    date = datetime.strptime(cur_date, "%d-%m-%Y")
+    return date.strftime("%Y-%m-%d")
 
 
 def main() -> None:
